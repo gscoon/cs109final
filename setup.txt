@@ -1,0 +1,9 @@
+newspaper
+    - https://github.com/codelucas/newspaper
+    - scrapes and gets keywords
+    - install:
+        pip install newspaper
+        pip install urllib3
+
+        import nltk
+        nltk.download('punkt')
