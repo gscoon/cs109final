@@ -62,14 +62,13 @@ module.exports = new function(){
                 // loop through each word
                 rankKeyWords(html, words);
 
-                res.send({status: true, keywords: words.post})
+                res.send({status: true, keywords: words.post, ranked: words.ranked})
             });
 
             // end the input stream and allow the process to exit
             pyshell.end(function (err) {
                 //if (err) throw err;
                 console.log('pyshell end with error?', (err != false));
-                if(err) console.log(err);
             });
 
         });
@@ -112,6 +111,16 @@ module.exports = new function(){
 
             });
         }
+
+        // create an array sorted based on rank
+        var ranked = [];
+        for(var k in words.post){
+            var tuple = [k, words.post[k]];
+            ranked.push(tuple)
+        }
+        ranked.sort(keywordSort);
+        words.ranked = ranked;
+
     }
 
     function myTrim(x) {
@@ -119,7 +128,7 @@ module.exports = new function(){
     }
 
     function keywordSort(a,b){
-        return b - a;
+        return b[1] - a[1];
     }
 
     function isURL(str) {
