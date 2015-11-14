@@ -9,7 +9,11 @@ var natural = require('natural'),
 
 
 module.exports = new function(){
-    var pyDir = path.resolve(__dirname, 'receive.py')
+    var pyPath = path.resolve(__dirname)
+    var pyOptions = {
+        mode:'text',
+        scriptPath: pyPath,
+    }
     var tagger = new pos.Tagger();
 
 
@@ -49,7 +53,7 @@ module.exports = new function(){
             }
 
             // send html to pyton script and wait for a response
-            var pyshell = new PythonShell(pyDir, {mode:'text'});
+            var pyshell = new PythonShell('receive.py', pyOptions);
             pyshell.send(html);
             pyshell.on('message', function (message) {
                 // received a message sent from the Python script (a simple "print" statement)
