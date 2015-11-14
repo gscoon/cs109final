@@ -2,6 +2,13 @@ newspaper
     - https://github.com/codelucas/newspaper
     - scrapes and gets keywords
     - install:
+		node
+			sudo apt-get --purge remove node
+			sudo apt-get --purge remove nodejs-legacy
+			sudo apt-get --purge remove nodejs
+
+			sudo apt-get install nodejs-legacy
+
 		python
 			sudo apt-get install python-pip python-dev build-essential 
 			sudo pip install --upgrade pip 
@@ -22,3 +29,5 @@ newspaper
 		express
 			npm install express --save
 			npm install express-generator -g
+			
+		npm install -g nodemon

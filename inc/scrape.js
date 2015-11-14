@@ -65,6 +65,7 @@ module.exports = new function(){
             pyshell.end(function (err) {
                 //if (err) throw err;
                 console.log('pyshell end with error?', (err != false));
+                if(err) console.log(err);
             });
 
         });
