@@ -19,6 +19,8 @@ an object of objects.  Sub-objects have keys with a given keyword and values hav
 a list of tuples, ranked by the most relevant key word
 
 
+## starting script
+forever start -p /var/projects/final-gs/ -a -l logs/log.txt -o logs/output.txt -e logs/error.txt app.js
 
 
 ## Setting up the server
@@ -61,3 +63,4 @@ express
 	npm install express-generator -g
 
 	npm install -g nodemon
+    npm install forever -g
