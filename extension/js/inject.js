@@ -1,12 +1,13 @@
 var expert = new function (){
 	this.start = function(){
 		console.log('content script loaded');
-		handleMessages();
+		handleBackgroundMessages();
 	}
 
-	function handleMessages(){
+
+	function handleBackgroundMessages(){
 		chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
-			if (msg.action == 'show_menu') {
+			if (msg.action == 'show_menu'){
 				showMenu();
 			}
 		});
@@ -17,8 +18,19 @@ var expert = new function (){
 		var menu = $('<div id="expert_menu"></div>');
 		menu.hide();
 		$('body').append(menu);
+		var html = $('html')[0].outerHTML;
+		var reqObj = {action: "get_experts", data:{html: html}};
+		chrome.runtime.sendMessage(reqObj, function(response) {
+			if(typeof response == 'object'){
+				response.ranked.forEach(function(item){
+					menu.append('<div class="expert_keyword">'+item[0]+'</div>')
+				});
+			}
+		});
+
 		menu.fadeIn(300);
 	}
 }
 
-$(expert.start);
+
+expert.start();

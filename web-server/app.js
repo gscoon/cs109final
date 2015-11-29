@@ -1,18 +1,20 @@
 var express = require('express');
 var expressApp = express();
+var bodyParser = require('body-parser')
 
 app = {
-    scrape: require('./inc/scrape.js')
+    experts: require('./inc/experts.js')
 }
 
-expressApp.get('/keywords', function (req, res) {
-    app.scrape.getKeyWords(req.query.url, res);
-    console.log('query: ', req.query.url);
-});
+expressApp.use(bodyParser.json({limit: '50mb'}));       // to support JSON-encoded bodies
+expressApp.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));  // to support URL-encoded bodies
+
+expressApp.get('/keywords', app.experts.scrapeKeywords);
+expressApp.post('/experts', app.experts.getExperts);
 
 //The 404 Route (ALWAYS Keep this as the last route)
-expressApp.get('*', function(req, res){
-  res.send('bad URL, homie', 404);
+expressApp.all('*', function(req, res){
+    res.status(404).send('bad URL');
 });
 
 var server = expressApp.listen(2222, function () {
