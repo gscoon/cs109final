@@ -3,14 +3,15 @@ var expressApp = express();
 var bodyParser = require('body-parser')
 
 app = {
+    base: __dirname,
     experts: require('./inc/experts.js')
 }
 
 expressApp.use(bodyParser.json({limit: '50mb'}));       // to support JSON-encoded bodies
 expressApp.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));  // to support URL-encoded bodies
 
-expressApp.get('/keywords', app.experts.scrapeKeywords);
-expressApp.post('/experts', app.experts.getExperts);
+expressApp.get('/:which', app.experts.handleRequest);
+expressApp.post('/:which', app.experts.handleRequest);
 
 //The 404 Route (ALWAYS Keep this as the last route)
 expressApp.all('*', function(req, res){

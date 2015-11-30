@@ -1,4 +1,5 @@
 var serverURL = 'http://dev:2222/'
+var menuHTML = null;
 
 //if icon is clicked
 chrome.browserAction.onClicked.addListener(handleIconClick);
@@ -10,6 +11,9 @@ function messageHandler(req, sender, sendResponse){
     if(req.action == 'get_experts'){
         getExperts(req, sendResponse);
         return true;
+    }
+    else if(req.action == 'get_menu'){
+        sendResponse({menu: menuHTML});
     }
 }
 
@@ -24,6 +28,19 @@ function getExperts(req, sendResponse){
 
 
 function handleIconClick(tab){
-    console.log('icon clicked');
+    console.log('icon clicked', tab.id);
     chrome.tabs.sendMessage(tab.id, {action: 'show_menu'});
 }
+
+function getMenuHTMl(){
+    $.get(serverURL + 'menu', function(data){
+        menuHTML = data;
+    });
+}
+
+function start(){
+    console.log('Ext Loaded');
+    getMenuHTMl();
+}
+
+window.onload = start;
