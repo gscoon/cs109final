@@ -3,7 +3,7 @@
  **/
 #expert_menu
 {
-    width:320px;
+    width:300px;
     height:100%;
     background-color:#fff;
     position:fixed;
@@ -11,21 +11,39 @@
     top:0;
     box-shadow: -4px 0px 5px 0px rgba(0,0,0,0.3);
     z-index: 999999999;
-    font-family: "Open Sans";
     padding:20px 10px 10px;
     text-align: left;
 }
 
+#expert_menu, #expert_menu *
+{
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    font-family: "Open Sans";
+}
+
 #expert_menu #expert_menu_logo
 {
-    background-image:url('chrome-extension://__MSG_@@extension_id__/images/menu-logo.png');
+    background-image:url('chrome-extension://__MSG_@@extension_id__/images/menu-logo-small.png');
     background-repeat: no-repeat;
-    width:189px;
-    height:59px;
+    width:108px;
+    height:27px;
     margin:0 auto;
     padding:0 0 10px;
     border:#ccc solid;
     border-width:0 0 1px;
+}
+
+#expert_menu_x
+{
+    position:absolute;
+    right:10px;
+    top:10px;
+    cursor: pointer;
+    display: block;
+    width:12px;
+    height:11px;
+    background-image:url('chrome-extension://__MSG_@@extension_id__/images/x.png');
 }
 
 #expert_menu #expert_menu_loader
@@ -60,7 +78,7 @@
 
 #expert_menu .expert_keyword
 {
-    width:133px;
+    width:136px;
     margin:0 5px 10px 5px;
     padding:3px 0;
     text-align:center;

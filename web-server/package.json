@@ -4,6 +4,7 @@
     "cheerio": "^0.19.0",
     "express": "^4.13.3",
     "jade": "^1.11.0",
+    "moment": "^2.10.6",
     "natural": "^0.2.1",
     "needle": "^0.11.0",
     "nlp_compromise": "^1.1.4",

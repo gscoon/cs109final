@@ -1,10 +1,14 @@
 var express = require('express');
 var expressApp = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var moment = require('moment');
 
 app = {
     base: __dirname,
-    experts: require('./inc/experts.js')
+    experts: require('./inc/experts.js'),
+    log: function(m){
+        console.log(moment().format('YYYY-MM-DD hh:mm:ss') + ' ', m);
+    }
 }
 
 expressApp.use(bodyParser.json({limit: '50mb'}));       // to support JSON-encoded bodies

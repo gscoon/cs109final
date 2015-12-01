@@ -6,8 +6,8 @@ var cheerio = require('cheerio');
 var async = require('async');
 var nlp = require("nlp_compromise"); // n-grams - https://github.com/spencermountain/nlp_compromise
 var pos = require('pos'); // parts of speech    - https://github.com/dariusk/pos-js
-var natural = require('natural'),
-    TfIdf = natural.TfIdf
+var natural = require('natural');
+var TfIdf = natural.TfIdf
 
 
 module.exports = new function(){
@@ -18,7 +18,7 @@ module.exports = new function(){
     }
 
     this.handleRequest = function(req, res){
-        console.log('handleRequest', req.params.which);
+        app.log('handleRequest', req.params.which);
         switch(req.params.which){
             case 'menu':
                 returnMenu(res);
@@ -55,7 +55,7 @@ module.exports = new function(){
     function scrapeKeywordsBatch(req, res){
         if(typeof req.body.url != 'object') return res.send(returnError('url array missing in POST request'));
 
-        console.log('typeof url', typeof req.body.url, req.body.url.length, req.body.url[0]);
+        app.log('typeof url', typeof req.body.url, req.body.url.length, req.body.url[0]);
 
         var urlArray = req.body.url;
         var mapping = {};
@@ -66,17 +66,17 @@ module.exports = new function(){
 
         // pull keywords asynchronously
         async.map(urlArray, handleScrape, function(err, results){
-            console.log('map error', err);
+            app.log('map error', err);
             res.send({results:results, mapping:mapping});
         });
     }
 
     function handleScrape(url, callback){
-        console.log('handleScrape', isURL(url));
+        app.log('handleScrape', isURL(url));
         if(typeof(url) === 'undefined' || !isURL(url))
             return callback(null, returnError('Invalid URL.'));
 
-        console.log('is url: ', isURL(url), url);
+        app.log('is url: ', isURL(url), url);
 
         needle.get(url, {follow:10}, function(error, response) {
             if(error || response.statusCode != 200)

@@ -20,7 +20,7 @@ function messageHandler(req, sender, sendResponse){
 function getExperts(req, sendResponse){
     req.type = 'post';
     req.url = serverURL + 'experts';
-    console.log('experts request:', req);
+    log('experts request', req);
     $.ajax(req).done(function(response){
         sendResponse(response);
     });
@@ -28,7 +28,7 @@ function getExperts(req, sendResponse){
 
 
 function handleIconClick(tab){
-    console.log('icon clicked', tab.id);
+    log('Icon clicked');
     chrome.tabs.sendMessage(tab.id, {action: 'show_menu'});
 }
 
@@ -36,14 +36,18 @@ function getMenuHTMl(){
     $.get(serverURL + 'menu', function(data){
         menuHTML = data;
     }).fail(function(){
-        console.log('server did not deliver menu. try again.');
+        log('Server did not deliver menu. try again.');
         setTimeout(getMenuHTMl, 10000);
     });
 }
 
 function start(){
-    console.log('Ext Loaded');
+    log('Ext Loaded');
     getMenuHTMl();
+}
+
+function log(m){
+    console.log(moment().format('YYYY-MM-DD hh:mm:ss') + ' ', m);
 }
 
 window.onload = start;

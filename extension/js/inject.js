@@ -3,7 +3,7 @@ var expert = new function (){
 	var expertMenu = null;
 
 	this.start = function(){
-		console.log('content script loaded');
+		log('content script loaded');
 		handleBackgroundMessages();
 	}
 
@@ -18,13 +18,17 @@ var expert = new function (){
 
 
 	function showMenu(){
-		console.log('showMenu');
+		log('showMenu');
 
 		if(expertMenu == null)
 			chrome.runtime.sendMessage({action: 'get_menu'}, function(response) {
 				expertMenu = $(response.menu);
 				$('body').append(expertMenu);
-				expertMenu.hide().fadeIn(300);
+
+				$('#expert_menu_x').on('click', function(){
+					expertMenu.fadeOut(300);
+				});
+
 				doMenuWork();
 			});
 		else
@@ -33,6 +37,7 @@ var expert = new function (){
 	}
 
 	function doMenuWork(){
+		expertMenu.hide().fadeIn(300);
 		expertMenu.find('#expert_menu_loader').show();
 		expertMenu.find('#expert_menu_inner').hide();
 		var html = $('html')[0].outerHTML;
@@ -43,13 +48,17 @@ var expert = new function (){
 			if(typeof response == 'object'){
 				var kContainer = expertMenu.find('#expert_keyword_container');
 				response.ranked.every(function(item, i, a){
-					console.log(item, i);
+					log(item, i);
 					kContainer.append('<div class="expert_keyword">'+item[0]+'</div>');
 					return (i < 5);
 				});
 			}
 			expertMenu.find('#expert_menu_inner').fadeIn(300);
 		});
+	}
+
+	function log(m){
+	    console.log(moment().format('YYYY-MM-DD hh:mm:ss') + ' ', m);
 	}
 
 }
