@@ -6,6 +6,7 @@
 http://107.170.13.109:2222/keywords?url=" + [URL to scrape]
 * simple GET request
 * make sure provided URL is valid (ie. http://....)
+* http://107.170.13.109:2222/keywords?url=http://www.wsj.com/articles/sheldon-silver-conviction-shakes-albany-1448936770
 
 #### Making Bulk Requests (Post URL data)
 http://107.170.13.109:2222/keywords-batch
