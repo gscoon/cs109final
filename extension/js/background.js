@@ -35,6 +35,9 @@ function handleIconClick(tab){
 function getMenuHTMl(){
     $.get(serverURL + 'menu', function(data){
         menuHTML = data;
+    }).fail(function(){
+        console.log('server did not deliver menu. try again.');
+        setTimeout(getMenuHTMl, 10000);
     });
 }
 

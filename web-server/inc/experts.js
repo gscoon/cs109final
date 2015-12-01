@@ -3,6 +3,7 @@ var PythonShell = require('python-shell');
 var jade = require('jade');
 var needle = require('needle');
 var cheerio = require('cheerio');
+var async = require('async');
 var nlp = require("nlp_compromise"); // n-grams - https://github.com/spencermountain/nlp_compromise
 var pos = require('pos'); // parts of speech    - https://github.com/dariusk/pos-js
 var natural = require('natural'),
@@ -17,6 +18,7 @@ module.exports = new function(){
     }
 
     this.handleRequest = function(req, res){
+        console.log('handleRequest', req.params.which);
         switch(req.params.which){
             case 'menu':
                 returnMenu(res);
@@ -26,6 +28,9 @@ module.exports = new function(){
                 break;
             case 'keywords':
                 scrapeKeywords(req, res);
+                break;
+            case 'keywords-batch':
+                scrapeKeywordsBatch(req, res);
                 break;
             default:
                 res.status(404).send('bruh?');
@@ -42,25 +47,54 @@ module.exports = new function(){
     //needle.get('http://superuser.com/questions/380633/use-divx-settings-to-encode-to-mp4-with-ffmpeg?rq=1', {follow:10}, function(error, response) {
     function scrapeKeywords(req, res){
         var url = req.query.url;
+        handleScrape(url, function(ret){
+            res.send(ret);
+        });
+    }
 
-        if(typeof(url) === 'undefined' || !isURL(url)) return sendError(res, 'Invalid URL.')
+    function scrapeKeywordsBatch(req, res){
+        if(typeof req.body.url != 'object') return res.send(returnError('url array missing in POST request'));
+
+        console.log('typeof url', typeof req.body.url, req.body.url.length, req.body.url[0]);
+
+        var urlArray = req.body.url;
+        var mapping = {};
+
+        urlArray.forEach(function(u, i){
+            mapping[u] = i;
+        });
+
+        // pull keywords asynchronously
+        async.map(urlArray, handleScrape, function(err, results){
+            console.log('map error', err);
+            res.send({results:results, mapping:mapping});
+        });
+    }
+
+    function handleScrape(url, callback){
+        console.log('handleScrape', isURL(url));
+        if(typeof(url) === 'undefined' || !isURL(url))
+            return callback(null, returnError('Invalid URL.'));
 
         console.log('is url: ', isURL(url), url);
 
         needle.get(url, {follow:10}, function(error, response) {
-            if(error || response.statusCode != 200) return sendError(res, 'Site not found.')
-            handleKeywords(response.body, res)
+            if(error || response.statusCode != 200)
+                return callback(null, returnError('Site not found.'));
+            handleKeywords(response.body, callback);
         });
     }
 
     function getExperts(req, res){
         if('body' in req && 'html' in req.body)
-            handleKeywords(req.body.html, res);
+            handleKeywords(req.body.html, function(err, ret){
+                res.send(ret);
+            });
         else
             res.send('include the html source code')
     }
 
-    function handleKeywords(html, res){
+    function handleKeywords(html, callback){
         var $ = cheerio.load(html);
 
         // store important keywords pre = just list of important words, post = keywords with ranking #
@@ -97,18 +131,18 @@ module.exports = new function(){
             // loop through each word
             rankKeyWords(html, words);
 
-            res.send({status: true, keywords: words.post, ranked: words.ranked})
+            callback(null, {status: true, keywords: words.post, ranked: words.ranked});
         });
 
         // end the input stream and allow the process to exit
         pyshell.end(function (err) {
             //if (err) throw err;
-            console.log('pyshell end with error?', (err != false));
+            //console.log('pyshell end with error?', (err != false));
         });
     }
 
-    function sendError(res, message){
-        res.send({status:false, keywords:[], message: message});
+    function returnError(message){
+        return {status:false, keywords:[], message: message};
     }
 
 
@@ -164,7 +198,7 @@ module.exports = new function(){
     }
 
     function isURL(str) {
-        var urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
+        var urlregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
         return urlregex.test(str);
     }
 }

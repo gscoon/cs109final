@@ -10,8 +10,8 @@ app = {
 expressApp.use(bodyParser.json({limit: '50mb'}));       // to support JSON-encoded bodies
 expressApp.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));  // to support URL-encoded bodies
 
-expressApp.get('/:which', app.experts.handleRequest);
-expressApp.post('/:which', app.experts.handleRequest);
+expressApp.get('/:which([a-z_-]{1,30})', app.experts.handleRequest);
+expressApp.post('/:which([a-z_-]{1,30})', app.experts.handleRequest);
 
 //The 404 Route (ALWAYS Keep this as the last route)
 expressApp.all('*', function(req, res){

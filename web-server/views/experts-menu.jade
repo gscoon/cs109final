@@ -1,4 +1,11 @@
 div#expert_menu
     div#expert_menu_logo
-    div#expert_keyword_container
-        div#expert_keyword_container_title Keywords:
+    div#expert_menu_loader
+    div#expert_menu_inner
+        div#expert_keyword_container.expert_submenu
+            div.expert_sub_title Keywords:
+        div.expert_submenu
+            div.expert_sub_title Experts:
+        div.expert_submenu
+            div.expert_sub_title Trending:
+            iframe(src="http://www.google.com/trends/fetchComponent?hl=en-US&q=html5,jquery&cid=TIMESERIES_GRAPH_0&export=5&w=300&h=300")
