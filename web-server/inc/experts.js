@@ -47,7 +47,7 @@ module.exports = new function(){
     //needle.get('http://superuser.com/questions/380633/use-divx-settings-to-encode-to-mp4-with-ffmpeg?rq=1', {follow:10}, function(error, response) {
     function scrapeKeywords(req, res){
         var url = req.query.url;
-        handleScrape(url, function(ret){
+        handleScrape(url, function(err, ret){
             res.send(ret);
         });
     }

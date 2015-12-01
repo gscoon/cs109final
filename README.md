@@ -1,29 +1,55 @@
 #CS109 Final Project
 
-## Structure URL
-[IP Address of server] + ":2000/keywords/?url=" + [URL to scrape]
+## Making Requests
 
-## How is data returned
+#### Making Individual Requests
+http://107.170.13.109:2222/keywords?url=" + [URL to scrape]
+* simple GET request
+* make sure provided URL is valid (ie. http://....)
+
+#### Making Bulk Requests (Post URL data)
+http://107.170.13.109:2222/keywords-batch
+* You must make a POST request with an array of URLs using the key "url"
+* {url:["http://google.com","http://yahoo.com"]}
+
+## Handling Responses
+
+#### Receiving Individual Response
 Data is returned as a json object
 
 - status:
-    (true or false)
-    returns true if data is scraped
+    * returns true if data is scraped
+    * (true or false)
+
 
 - keywords
-{"word1":30, "word2": 20}
-an object of objects.  Sub-objects have keys with a given keyword and values have the corresponding to how important that keyword was in the html
+	* an object of objects.  Sub-objects have keys with a given keyword and values have the corresponding to how important that keyword was in the html
+	* {"word1":30, "word2": 20}
+
 
 - ranked
-[["word1",30], ["word2", 20]]
-a list of tuples, ranked by the most relevant key word
+	* a list of tuples, ranked by the most relevant key word
+	* [["word1",30], ["word2", 20]]
 
 
-## starting script
+
+#### Receiving Bulk Response
+A JSON object is returned with two keys (results and mapping)
+
+- results
+	* contains an array matching the url array passed.  Each instance of the array has a value that matches the individual response above.
+- mapping
+	* contains a dictionary with URLs as keys and the corresponding array index as the value
+	* {"http://google.com":0, "http://yahoo.com":1}
+
+
+## Server Stuff
+
+### starting script
 forever start -p /var/projects/final-gs/ -a -l logs/log.txt -o logs/output.txt -e logs/error.txt app.js
 
 
-## Setting up the server
+### Setting up the server
 
 
 - scrapes and gets keywords
