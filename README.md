@@ -47,7 +47,7 @@ A JSON object is returned with two keys (results and mapping)
 ## Server Stuff
 
 ### starting script
-forever start -p /var/projects/final-gs/ -a -l logs/log.txt -o logs/output.txt -e logs/error.txt app.js
+forever start -p /var/projects/final-gs/web-server -a -l logs/log.txt -o logs/output.txt -e logs/error.txt app.js
 
 
 ### Setting up the server
