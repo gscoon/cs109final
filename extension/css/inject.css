@@ -10,9 +10,10 @@
     right:0;
     top:0;
     box-shadow: -4px 0px 5px 0px rgba(0,0,0,0.3);
-    z-index: 999999999;
+    z-index: 9999999999999;
     padding:20px 10px 10px;
     text-align: left;
+    border:#FBDCB8 SOLID 5PX;
 }
 
 #expert_menu, #expert_menu *

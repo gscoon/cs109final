@@ -47,7 +47,7 @@ function start(){
 }
 
 function log(m){
-    console.log(moment().format('YYYY-MM-DD hh:mm:ss') + ' ', m);
+    console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' ', m);
 }
 
 window.onload = start;

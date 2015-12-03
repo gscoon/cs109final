@@ -2,12 +2,17 @@ var express = require('express');
 var expressApp = express();
 var bodyParser = require('body-parser');
 var moment = require('moment');
+var colors = require('colors');
 
 app = {
     base: __dirname,
     experts: require('./inc/experts.js'),
-    log: function(m){
-        console.log(moment().format('YYYY-MM-DD hh:mm:ss') + ' ', m);
+    log: function(){
+        var args = [];
+        for (var i = 0; i < arguments.length; ++i) args[i] = arguments[i];
+        var ts = colors.cyan(moment().format('YYYY-MM-DD HH:mm:ss'));
+        args.unshift(ts);
+        console.log.apply(console, args);
     }
 }
 
@@ -26,5 +31,5 @@ var server = expressApp.listen(2222, function () {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log('App listening at http://%s:%s', host, port);
+    app.log('App listening at http://', host, ':', port);
 });
