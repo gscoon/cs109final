@@ -1,0 +1,164 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'r',
+1 verbose cli   'rawjs' ]
+2 info using npm@1.4.29
+3 info using node@v0.10.41
+4 verbose node symlink /usr/bin/node
+5 warn deprecated This version of npm lacks support for important features,
+6 warn deprecated such as scoped packages, offered by the primary npm
+7 warn deprecated registry. Consider upgrading to at least npm@2, if not the
+8 warn deprecated latest stable version. To upgrade to npm@2, run:
+9 warn deprecated npm -g install npm@latest-2
+10 warn deprecated To upgrade to the latest stable version, run:
+11 warn deprecated npm -g install npm@latest
+12 warn deprecated (Depending on how Node.js was installed on your system, you
+13 warn deprecated may need to prefix the preceding commands with `sudo`, or if
+14 warn deprecated on Windows, run them from an Administrator prompt.)
+15 warn deprecated If you're running the version of npm bundled with
+16 warn deprecated Node.js 0.10 LTS, be aware that the next version of 0.10 LTS
+17 warn deprecated will be bundled with a version of npm@2, which has some small
+18 warn deprecated backwards-incompatible changes made to `npm run-script` and
+19 warn deprecated semver behavior.
+20 warn package.json @ No description
+21 warn package.json @ No repository field.
+22 warn package.json @ No README data
+23 warn package.json css@1.0.8 No repository field.
+24 warn package.json css-parse@1.0.4 No repository field.
+25 warn package.json css-stringify@1.0.5 No repository field.
+26 warn package.json string_decoder@0.10.31 string_decoder is also the name of a node core module.
+27 warn package.json wcwidth@1.0.0 No repository field.
+28 verbose readDependencies using package.json deps
+29 verbose cache add [ 'r', null ]
+30 verbose cache add name=undefined spec="r" args=["r",null]
+31 verbose parsed url { protocol: null,
+31 verbose parsed url   slashes: null,
+31 verbose parsed url   auth: null,
+31 verbose parsed url   host: null,
+31 verbose parsed url   port: null,
+31 verbose parsed url   hostname: null,
+31 verbose parsed url   hash: null,
+31 verbose parsed url   search: null,
+31 verbose parsed url   query: null,
+31 verbose parsed url   pathname: 'r',
+31 verbose parsed url   path: 'r',
+31 verbose parsed url   href: 'r' }
+32 verbose cache add [ 'rawjs', null ]
+33 verbose cache add name=undefined spec="rawjs" args=["rawjs",null]
+34 verbose parsed url { protocol: null,
+34 verbose parsed url   slashes: null,
+34 verbose parsed url   auth: null,
+34 verbose parsed url   host: null,
+34 verbose parsed url   port: null,
+34 verbose parsed url   hostname: null,
+34 verbose parsed url   hash: null,
+34 verbose parsed url   search: null,
+34 verbose parsed url   query: null,
+34 verbose parsed url   pathname: 'rawjs',
+34 verbose parsed url   path: 'rawjs',
+34 verbose parsed url   href: 'rawjs' }
+35 silly lockFile 4dc7c9ec-r r
+36 verbose lock r /home/gubu/.npm/4dc7c9ec-r.lock
+37 silly lockFile 81592fe2-rawjs rawjs
+38 verbose lock rawjs /home/gubu/.npm/81592fe2-rawjs.lock
+39 silly lockFile 4dc7c9ec-r r
+40 silly lockFile 4dc7c9ec-r r
+41 silly lockFile 81592fe2-rawjs rawjs
+42 silly lockFile 81592fe2-rawjs rawjs
+43 verbose addNamed [ 'r', '' ]
+44 verbose addNamed [ null, '*' ]
+45 silly lockFile 7f93b94c-r r@
+46 verbose lock r@ /home/gubu/.npm/7f93b94c-r.lock
+47 verbose addNamed [ 'rawjs', '' ]
+48 verbose addNamed [ null, '*' ]
+49 silly lockFile 12fd6842-rawjs rawjs@
+50 verbose lock rawjs@ /home/gubu/.npm/12fd6842-rawjs.lock
+51 silly addNameRange { name: 'r', range: '*', hasData: false }
+52 silly addNameRange { name: 'rawjs', range: '*', hasData: false }
+53 verbose request where is /r
+54 verbose request registry https://registry.npmjs.org/
+55 verbose request id 00d72c22c103ba72
+56 verbose url raw /r
+57 verbose url resolving [ 'https://registry.npmjs.org/', './r' ]
+58 verbose url resolved https://registry.npmjs.org/r
+59 verbose request where is https://registry.npmjs.org/r
+60 info trying registry request attempt 1 at 23:59:14
+61 http GET https://registry.npmjs.org/r
+62 verbose request where is /rawjs
+63 verbose request registry https://registry.npmjs.org/
+64 verbose url raw /rawjs
+65 verbose url resolving [ 'https://registry.npmjs.org/', './rawjs' ]
+66 verbose url resolved https://registry.npmjs.org/rawjs
+67 verbose request where is https://registry.npmjs.org/rawjs
+68 info trying registry request attempt 1 at 23:59:14
+69 http GET https://registry.npmjs.org/rawjs
+70 http 200 https://registry.npmjs.org/r
+71 silly registry.get cb [ 200,
+71 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+71 silly registry.get     etag: '"3TLMYAKXDIOF1H0YPA6AY3PY2"',
+71 silly registry.get     'content-type': 'application/json',
+71 silly registry.get     'cache-control': 'max-age=60',
+71 silly registry.get     'content-length': '3513',
+71 silly registry.get     'accept-ranges': 'bytes',
+71 silly registry.get     date: 'Wed, 09 Dec 2015 04:59:11 GMT',
+71 silly registry.get     via: '1.1 varnish',
+71 silly registry.get     age: '0',
+71 silly registry.get     connection: 'keep-alive',
+71 silly registry.get     'x-served-by': 'cache-iad2138-IAD',
+71 silly registry.get     'x-cache': 'MISS',
+71 silly registry.get     'x-cache-hits': '0',
+71 silly registry.get     'x-timer': 'S1449637151.105471,VS0,VE351',
+71 silly registry.get     vary: 'Accept' } ]
+72 silly addNameRange number 2 { name: 'r', range: '*', hasData: true }
+73 silly addNameRange versions [ 'r', [ '0.0.1', '0.0.2', '0.0.3', '0.0.4', '0.0.5' ] ]
+74 verbose addNamed [ 'r', '0.0.5' ]
+75 verbose addNamed [ '0.0.5', '0.0.5' ]
+76 silly lockFile e92178ce-r-0-0-5 r@0.0.5
+77 verbose lock r@0.0.5 /home/gubu/.npm/e92178ce-r-0-0-5.lock
+78 silly lockFile 0372e427-registry-npmjs-org-r-r-0-0-5-tgz https://registry.npmjs.org/r/-/r-0.0.5.tgz
+79 verbose lock https://registry.npmjs.org/r/-/r-0.0.5.tgz /home/gubu/.npm/0372e427-registry-npmjs-org-r-r-0-0-5-tgz.lock
+80 verbose addRemoteTarball [ 'https://registry.npmjs.org/r/-/r-0.0.5.tgz',
+80 verbose addRemoteTarball   'fe33550d0c6e27eb41450f6404b1e31b71cd6531' ]
+81 http 404 https://registry.npmjs.org/rawjs
+82 silly registry.get cb [ 404,
+82 silly registry.get   { 'content-type': 'application/json',
+82 silly registry.get     'cache-control': 'max-age=0',
+82 silly registry.get     'content-length': '2',
+82 silly registry.get     'accept-ranges': 'bytes',
+82 silly registry.get     date: 'Wed, 09 Dec 2015 04:59:11 GMT',
+82 silly registry.get     via: '1.1 varnish',
+82 silly registry.get     age: '0',
+82 silly registry.get     connection: 'keep-alive',
+82 silly registry.get     'x-served-by': 'cache-iad2127-IAD',
+82 silly registry.get     'x-cache': 'MISS',
+82 silly registry.get     'x-cache-hits': '0',
+82 silly registry.get     'x-timer': 'S1449637151.105879,VS0,VE366' } ]
+83 info retry fetch attempt 1 at 23:59:14
+84 verbose fetch to= /tmp/npm-22951-kf1ahvbj/registry.npmjs.org/r/-/r-0.0.5.tgz
+85 silly lockFile 12fd6842-rawjs rawjs@
+86 silly lockFile 12fd6842-rawjs rawjs@
+87 http GET https://registry.npmjs.org/r/-/r-0.0.5.tgz
+88 http 200 https://registry.npmjs.org/r/-/r-0.0.5.tgz
+89 silly lockFile 0372e427-registry-npmjs-org-r-r-0-0-5-tgz https://registry.npmjs.org/r/-/r-0.0.5.tgz
+90 silly lockFile 0372e427-registry-npmjs-org-r-r-0-0-5-tgz https://registry.npmjs.org/r/-/r-0.0.5.tgz
+91 silly lockFile e92178ce-r-0-0-5 r@0.0.5
+92 silly lockFile e92178ce-r-0-0-5 r@0.0.5
+93 silly lockFile 7f93b94c-r r@
+94 silly lockFile 7f93b94c-r r@
+95 error 404 Not Found
+95 error 404
+95 error 404 'rawjs' is not in the npm registry.
+95 error 404 You should bug the author to publish it
+95 error 404
+95 error 404 Note that you can also install from a
+95 error 404 tarball, folder, or http url, or git url.
+96 error System Linux 3.8.0-44-generic
+97 error command "/usr/bin/node" "/usr/bin/npm" "install" "--save" "r" "rawjs"
+98 error cwd /home/gubu/projects/cs109/final-gs/server
+99 error node -v v0.10.41
+100 error npm -v 1.4.29
+101 error code E404
+102 verbose exit [ 1, true ]

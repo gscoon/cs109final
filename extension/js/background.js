@@ -7,6 +7,11 @@ chrome.browserAction.onClicked.addListener(handleIconClick);
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(messageHandler);
 
+function start(){
+    log('Ext Loaded');
+    getMenuHTMl();
+}
+
 function messageHandler(req, sender, sendResponse){
     if(req.action == 'get_experts'){
         getExperts(req, sendResponse);
@@ -39,11 +44,6 @@ function getMenuHTMl(){
         log('Server did not deliver menu. try again.');
         setTimeout(getMenuHTMl, 10000);
     });
-}
-
-function start(){
-    log('Ext Loaded');
-    getMenuHTMl();
 }
 
 function log(m){

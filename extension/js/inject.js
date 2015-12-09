@@ -58,7 +58,11 @@ var expert = new function (){
 	}
 
 	function log(m){
-	    console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' ', m);
+		var args = [];
+	    for (var i = 0; i < arguments.length; ++i) args[i] = arguments[i];
+	    var ts = moment().format('YYYY-MM-DD HH:mm:ss');
+	    args.unshift(ts);
+	    console.log.apply(console, args);
 	}
 
 }
