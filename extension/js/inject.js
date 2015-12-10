@@ -47,28 +47,36 @@ var expert = new function (){
 			expertMenu.find('#expert_menu_loader').hide();
 
 			if(typeof response == 'object'){
-				var redditURL = 'https://www.reddit.com';
+				if('trends' in response && 'data' in response.trends)
+					setTrends(response.trends);
+
 				var kContainer = expertMenu.find('#expert_keyword_container_inner');
-				var rContainer = expertMenu.find('#expert_reddit_container_inner');
 				kContainer.html('');
-				rContainer.html('');
+
 				var kw = []
 				response.keywords.ranked.every(function(item, i, a){
 					kw.push(item[0]);
 					kContainer.append('<div class="expert_keyword">'+item[0]+'</div>');
 					return (i < 5);
 				});
-				setTrends(response.trends);
 
-				// loop through reddit experts
-				response.reddit.every(function(ritem, i, a){
-					rContainer.append('<div class="expert_reddit_row">');
-					rContainer.append('<div class="expert_reddit_user"><a class="expert_reddit_user_a" target="_blank" href="https://www.reddit.com/user/'+ritem.author+'">' + ritem.author + '</a></div>');
-					rContainer.append('<div class="expert_reddit_title"><a class="expert_reddit_title_a" target="_blank" href="' + redditURL + ritem.permalink + '">' + ritem.postTitle + '</a></div>');
-					if(typeof ritem.body == 'string') rContainer.append('<div class="expert_reddit_comment">' + ritem.body + '</div>');
-					rContainer.append('</div">');
-					return (i < 5);
-				});
+
+				if('reddit' in response && Array.isArray(response.reddit)){
+					var redditURL = 'https://www.reddit.com';
+					var rContainer = expertMenu.find('#expert_reddit_container_inner');
+					rContainer.html('');
+
+					// loop through reddit experts
+					response.reddit.every(function(ritem, i, a){
+						rContainer.append('<div class="expert_reddit_row">');
+						rContainer.append('<div class="expert_reddit_user"><a class="expert_reddit_user_a" target="_blank" href="https://www.reddit.com/user/'+ritem.author+'">' + ritem.author + '</a></div>');
+						rContainer.append('<div class="expert_reddit_title"><a class="expert_reddit_title_a" target="_blank" href="' + redditURL + ritem.permalink + '">' + ritem.postTitle + '</a></div>');
+						if(typeof ritem.body == 'string') rContainer.append('<div class="expert_reddit_comment">' + ritem.body + '</div>');
+						rContainer.append('</div">');
+						return (i < 5);
+					});
+				}
+
 			}
 			expertMenu.find('#expert_menu_inner').fadeIn(300);
 		});
