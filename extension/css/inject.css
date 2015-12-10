@@ -3,7 +3,7 @@
  **/
 #expert_menu
 {
-    width:300px;
+    width:440px;
     height:100%;
     background-color:#fff;
     position:fixed;
@@ -65,7 +65,7 @@
 
 #expert_menu .expert_submenu
 {
-    padding:20px 0 0;
+    padding:10px 0 0;
 }
 
 #expert_menu .expert_sub_title
@@ -89,6 +89,47 @@
     display:inline-block;
 }
 
+#expert_reddit_container_inner
+{
+    max-height:200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#expert_menu .expert_reddit_row
+{
+    padding:5px 0;
+    font-size:12px;
+}
+
+#expert_menu .expert_reddit_user_a
+{
+    font-size:13px;
+    color:#255f6d;
+    font-weight: bold;
+}
+
+#expert_menu .expert_reddit_title
+{
+    padding:0 0 0 15px;
+    height:22px;
+    overflow: hidden;
+}
+
+#expert_menu .expert_reddit_title_a
+{
+    color:#333;
+    font-size:12px;
+}
+
+#expert_menu .expert_reddit_comment
+{
+    padding:2px 0 0 15px;
+    color:#666;
+    font-size:12px;
+    max-height:50px;
+    overflow: hidden;
+}
 
 #expert_menu iframe
 {
@@ -97,4 +138,10 @@
     border:0;
     padding:0;
     margin:0;
+}
+
+#expert_trend_chart
+{
+    width: 440px;
+    height:300px;
 }

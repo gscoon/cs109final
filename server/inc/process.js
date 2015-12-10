@@ -9,7 +9,7 @@ var nlp = require("nlp_compromise"); // n-grams - https://github.com/spencermoun
 var pos = require('pos'); // parts of speech    - https://github.com/dariusk/pos-js
 var natural = require('natural');
 var TfIdf = natural.TfIdf
-
+var fs = require('fs');
 
 module.exports = new function(){
 
@@ -38,58 +38,6 @@ module.exports = new function(){
             default:
                 res.status(404).send('bruh?');
         }
-    }
-
-    function getToken(callback){
-        var data = {grant_type: "password", username: app.config.username, password: app.config.pw};
-        var opt = {
-            url: 'https://www.reddit.com/api/v1/access_token',
-            headers: {'User-Agent': app.config.user_agent},
-            formData: data,
-            auth: {
-                user: app.config.client_id,
-                password: app.config.secret_id
-            }
-        }
-
-        request.post(opt, function(err, res, body){
-            if(err)
-                callback({status:false, error: err})
-            else{
-                var b = JSON.parse(body);
-                var auth =  b.token_type + ' ' + b.access_token;
-                var token = {'Authorization': auth, 'User-Agent': app.config.user_agent};
-                callback({status:true, token: token})
-            }
-        })
-    }
-
-
-
-    this.pullRedditData = function(keywords, callback){
-        var ret = {status:false};
-        getToken(function(tok){
-            if(!tok.status) return callback({status:false, error: 'token error'})
-
-            var token = tok.token;
-
-            opt = {
-                method: 'GET',
-                url: "https://oauth.reddit.com/r/all/search?limit=10&type=link&t=mounth&sort=relevance&q=" + keywords.join(' '),
-                headers: token
-            }
-
-            request.get(opt, function(err, res, body){
-                if(err) return callback({status:false, error: err})
-                callback({status:true, data: JSON.parse(body)})
-            });
-        });
-    }
-
-
-
-    function basicAuth(u, p){
-        return "Basic " + new Buffer(u + ":" + p).toString("base64");
     }
 
     function returnMenu(res){
@@ -141,23 +89,199 @@ module.exports = new function(){
     }
 
     function getExperts(req, res){
-        if('body' in req && 'html' in req.body)
-            handleKeywords(req.body.html, function(err, kwObj){
-                var kw = kwObj.ranked.map(function(k){return k[0]});
-                kw = kw.slice(0,2);
-                app.process.pullRedditData(kw, function(ret){
-                    if(!kwObj.status) return res.send({reddit: kwObj, keywords: kwObj});
-                    var rd = [];
-                    ret.data.data.children.forEach(function(c){
-                        rd.push({score:c.data.score, user:c.data.author, url: c.data.url})
-                        console.log(c.data.score, c.data.url);
-                    })
-                    return res.send({reddit: rd, keywords: kwObj});
-                });
+        if(!('body' in req) || !('html' in req.body))
+            return res.send('include the html source code')
 
+        handleKeywords(req.body.html, function(err, kwRet){
+            var fullRet = {reddit: {status:false}, keywords: kwRet};
+            if(!kwRet.status) return res.send(fullRet);
+
+            // create a list of keywords
+            var kw = kwRet.ranked.map(function(k){return k[0]});
+            kw = kw.slice(0,3); // limit number keywords used in search
+
+            async.parallel({
+                trends: function(callback){
+                    getTrendsData(kw, callback);
+                    //callback(null, app.trends)  // using fake data
+                },
+                reddit: function(callback){
+                    getRedditExperts(kw, callback);
+                }
+            }, function(err, results){
+                fullRet.reddit = results.reddit;
+                fullRet.trends = results.trends;
+
+                return res.send(fullRet);
             });
-        else
-            res.send('include the html source code')
+
+
+
+        });
+    }
+
+    function getTrendsData(kw, callback){
+        var terms = kw.join(',').replace(/[\'\’]/gi, "");
+        var tURL = 'http://www.google.com/trends/fetchComponent?q={0}&cid=TIMESERIES_GRAPH_0&export=3'.format(terms);
+        var opt = {url: tURL, Method: 'GET', headers: {'User-Agent': app.config.user_agent}}
+        request(opt, function(err, res, body){
+            if(res.statusCode != 200)
+                return callback(null, {status:false, error:body, url: tURL});
+            var regexp = /(\{\"c\".{1,90}\}\]\})/gi;
+            body = body.replace(/new Date\(.{5,9}\)/ig,"0");
+            var matches_array = body.match(regexp);
+            var data = [];
+            var ts = [];
+
+            matches_array.forEach(function(m){
+                if(!isJson(m)) return false;
+                var dataLength = m.length - 1
+                var m = JSON.parse(m);
+                m.c.forEach(function(c, index){
+                    if(index == 0)
+                        ts.push(c.f);
+                    else{
+                        if(typeof data[index - 1] === 'undefined') data[index - 1] = [];
+                        data[index - 1].push(c.v);
+                    }
+                })
+            });
+            var retObj = {data: data, labels: ts, kw: kw};
+
+            callback(null, retObj);
+        })
+    }
+
+    // get token
+    // data request
+    // get wanted items from data
+
+    function getRedditExperts(keywords, callback){
+        var token = null;
+        async.waterfall([
+            getRedditToken,
+            function(tok, cb){token= tok.token; searchReddit(token, keywords, cb)},
+            parseRedditPosts,
+            function(postObj, cb){getRedditComments(token, postObj, cb)}
+        ], function(err, results){
+            callback(null, err?err:results)
+        });
+    }
+
+    function getRedditToken(callback){
+        app.log('getRedditToken');
+        var data = {grant_type: "password", username: app.config.username, password: app.config.pw};
+        var opt = {
+            url: 'https://www.reddit.com/api/v1/access_token',
+            headers: {'User-Agent': app.config.user_agent},
+            formData: data,
+            auth: {
+                user: app.config.client_id,
+                password: app.config.secret_id
+            }
+        }
+
+        request.post(opt, function(err, res, body){
+            if(err)
+                callback({status:false, error: err, detail:'token'});
+            else{
+                var b = JSON.parse(body);
+                var auth =  b.token_type + ' ' + b.access_token;
+                var token = {'Authorization': auth, 'User-Agent': app.config.user_agent};
+                callback(null, {status:true, token: token})
+            }
+        })
+    }
+
+    var redditURL = 'https://oauth.reddit.com/r/';
+
+    function searchReddit(token, keywords, callback){
+        var searchLimit = 5;
+        var t = 'month';
+        var searchTerm = keywords.join(' ').replace(/[\'\’]/gi, "");
+
+        app.log('searchReddit', searchTerm);
+        var opt = {method: 'GET', url: redditURL + "all/search?limit=" + searchLimit + "&type=link&t=" + t + "&sort=relevance&q=" + searchTerm, headers: token}
+        request.get(opt, function(err, res, body){
+            if(err || res.statusCode != 200) return callback({status:false, error: (err)?err:res.statusCode, detail: 'reddit post pull'})
+            callback(null, {status:true, posts: JSON.parse(body)})
+        });
+    }
+
+    function parseRedditPosts(ret, callback){
+        app.log('parseRedditPosts', ret.posts.data.children.length);
+        var rd = [];
+        var priority = 1;
+        ret.posts.data.children.forEach(function(c){
+            var post = c.data;
+            post.priority = priority;
+            rd.push(post);
+            priority++;
+        });
+        rd = rd.slice(0,3); //limit number of experts
+        callback(null, {data: rd, status:true});
+    }
+
+    function getRedditComments(token, postObj, callback){
+        // async.map(urlArray, handleScrape, function(err, results){
+        async.map(postObj.data, function(post, cb){
+            var opt = {method: 'GET', url: redditURL + '{0}/comments/{1}/?depth=1'.format(post.subreddit, post.id), headers: token}
+            app.log(opt.url);
+            request.get(opt, function(err, res, body){
+                console.log(res.statusCode, err);
+                if(err || res.statusCode != 200) return cb(null);
+                cb(null, {
+                    priority: post.priority,
+                    url: post.url,
+                    permalink: post.permalink,
+                    title: post.title,
+                    comments:JSON.parse(body)
+                });
+            });
+        },
+        function(err, commentObj){ //all of the comments in commentobj
+            parseRedditComments(commentObj, callback);
+        });
+    }
+
+    function parseRedditComments(commentObj, callback){
+        //redditURL
+        var cp = [];
+        // loop trough each comment group
+        commentObj.forEach(function(post){
+            //console.log('comment group', commentGroup);
+            if(typeof post === 'undefined') return false;
+
+            var theseComments = [];
+            post.comments.forEach(function(cc){
+                theseComments = theseComments.concat(cc.data.children.map(function(ccc){
+                    ccc.data.priority = post.priority;
+                    ccc.data.postTitle = post.title;
+                    ccc.data.postURL = post.url;
+                    ccc.data.permalink = post.permalink;
+                    return ccc.data
+                }));
+            });
+            cp.push(theseComments);
+
+        });
+        var comments = commentsSort(cp);
+        callback(null, comments);
+    }
+
+    function commentsSort(cp){
+        comments = [];
+        cp.forEach(function(c){
+            c.sort(function(a,b){
+                if (a.score < b.score)
+                    return 1;
+                if (a.score > b.score)
+                    return -1;
+                return 0;
+            });
+            comments = comments.concat(c);
+        });
+        return comments;
     }
 
     function handleKeywords(html, callback){
@@ -267,4 +391,17 @@ module.exports = new function(){
         var urlregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
         return urlregex.test(str);
     }
+
+    function isJson(str){
+        try
+        {
+           var json = JSON.parse(str);
+        }
+        catch(e)
+        {
+           return false;
+        }
+        return true;
+    }
+
 }

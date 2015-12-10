@@ -6,7 +6,8 @@ app = {
     base: __dirname,
     process: require('./inc/process.js'),
     log: require('./inc/log.js'),
-    config: require('./inc/config.json')
+    config: require('./inc/config.json'),
+    trends: require('./data/trend.json') //shouldnt be used
 }
 
 expressApp.use(bodyParser.json({limit: '50mb'}));       // to support JSON-encoded bodies
@@ -23,6 +24,19 @@ expressApp.all('*', function(req, res){
 var server = expressApp.listen(2222, function () {
     var host = server.address().address;
     var port = server.address().port;
-    
+
     app.log('App listening at http://', host, ':', port);
 });
+
+// First, checks if it isn't implemented yet.
+if (!String.prototype.format) {
+  String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
